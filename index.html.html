@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lalawima's Jamu - Sehat Alami</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-green': '#1a4d3a',
+                        'medium-green': '#2d6a4f',
+                        'light-green': '#40916c',
+                        'pastel-yellow': '#f9e784',
+                        'light-yellow': '#fef3c7'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .jamu-bg {
+            background: linear-gradient(rgba(21, 128, 61, 0.7), rgba(45, 106, 79, 0.7)), url('https://i.imgur.com/yRywiNS.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        .bottle-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #15803d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-animation {
+            animation: loadingBounce 1s ease-in-out infinite;
+        }
+        
+        @keyframes loadingBounce {
+            0%, 100% { 
+                transform: translateY(0px);
+            }
+            50% { 
+                transform: translateY(-30px);
+            }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            padding: 1rem;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-button.active {
+            background-color: #f9e784;
+            color: #1a4d3a;
+        }
+        
+        .mobile-menu {
+            display: none;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: #f9e784;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        .text-slide-in {
+            animation: slideInFromLeft 1s ease-out;
+        }
+        
+        .text-fade-in {
+            animation: fadeInUp 1.2s ease-out 0.3s both;
+        }
+        
+        .button-fade-in {
+            animation: fadeInUp 1.4s ease-out 0.6s both;
+        }
+        
+        .tab-fade-in {
+            animation: fadeInUp 0.8s ease-out both;
+        }
+        
+        .tab-fade-in-delay {
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        
+        .tab-fade-in-delay-2 {
+            animation: fadeInUp 1.2s ease-out 0.4s both;
+        }
+        
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+                z-index: 1001;
+            }
+            
+            .desktop-nav {
+                display: none;
+            }
+            
+            .mobile-menu {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background-color: #15803d;
+                padding: 1.5rem;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                border-bottom: 3px solid #f9e784;
+            }
+            
+            .mobile-menu button {
+                display: block;
+                width: 100%;
+                text-align: center;
+                padding: 1rem 1.5rem;
+                margin: 0.5rem 0;
+                border-radius: 0.75rem;
+                font-size: 1.1rem;
+                font-weight: 600;
+                min-height: 56px;
+                border: 2px solid transparent;
+                transition: all 0.3s ease;
+            }
+            
+            .mobile-menu button:hover {
+                border-color: #f9e784;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+            
+            .mobile-menu button.active {
+                background-color: #f9e784;
+                color: #1a4d3a;
+                border-color: #f9e784;
+                box-shadow: 0 4px 12px rgba(249, 231, 132, 0.4);
+            }
+            
+            .modal-content {
+                margin: 1rem;
+                max-width: calc(100% - 2rem);
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .md\:grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .lg\:grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .text-4xl {
+                font-size: 2rem;
+            }
+            
+            .text-5xl {
+                font-size: 2.5rem;
+            }
+            
+            .text-6xl {
+                font-size: 3rem;
+            }
+            
+            .px-8 {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            
+            .py-3 {
+                padding-top: 0.875rem;
+                padding-bottom: 0.875rem;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .md\:grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .lg\:grid-cols-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .lg\:grid-cols-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Touch-friendly buttons */
+        @media (max-width: 768px) {
+            button, .cursor-pointer {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            input, textarea, select {
+                min-height: 44px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark-green text-white font-sans">
+    
+<!-- Loading Screen -->
+<div id="loadingScreen" class="loading-screen">
+    <div class="text-center">
+        <div class="w-40 h-40 md:w-32 md:h-52 flex items-center justify-center loading-animation mx-auto mb-4 overflow-hidden">
+            <img id="loadingLogo" src="https://imgur.com/mz3w5MJ.jpg" alt="Loading Lalawima's Jamu" class="w-full h-full object-contain rounded-full" 
+                 onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-3xl md:text-5xl text-dark-green\'>🫚</span>';">
+        </div>
+        <div class="text-white text-xl md:text-2xl font-semibold">Lalawima's Jamu</div>
+        <div class="text-light-yellow text-sm md:text-base mt-2">Memuat...</div>
+    </div>
+</div>
+
+
+    <!-- Header -->
+    <header class="shadow-lg relative z-50" style="background-color: #15803d;">
+        <div class="container mx-auto px-4 md:px-6 py-4">
+            <div class="flex items-center justify-between min-h-[60px]">
+                <div class="flex items-center space-x-3">
+                    <img src="https://i.imgur.com/46JUb7x.png" alt="Logo Lalawima's Jamu" class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.innerHTML='🫚 Lalawima\'s Jamu';">
+                    <h1 class="text-xl md:text-2xl lg:text-3xl font-bold text-pastel-yellow">Lalawima's Jamu</h1>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="desktop-nav hidden md:flex space-x-2 lg:space-x-6">
+                    <button onclick="showTab('home')" class="tab-button active px-3 lg:px-4 py-2 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green text-sm lg:text-base">Beranda</button>
+                    <button onclick="showTab('about')" class="tab-button px-3 lg:px-4 py-2 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green text-sm lg:text-base">Tentang Kami</button>
+                    <button onclick="showTab('product')" class="tab-button px-3 lg:px-4 py-2 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green text-sm lg:text-base">Produk</button>
+                    <button onclick="showTab('testimonial')" class="tab-button px-3 lg:px-4 py-2 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green text-sm lg:text-base">Ulasan</button>
+                    <button onclick="showTab('contact')" class="tab-button px-3 lg:px-4 py-2 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green text-sm lg:text-base">Kontak</button>
+                </nav>
+                
+                <!-- Mobile Hamburger Menu -->
+                <div class="hamburger md:hidden" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation Menu -->
+            <div id="mobileMenu" class="mobile-menu">
+                <button onclick="showTab('home'); closeMobileMenu();" class="tab-button active w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green">Beranda</button>
+                <button onclick="showTab('about'); closeMobileMenu();" class="tab-button w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green">Tentang Kami</button>
+                <button onclick="showTab('product'); closeMobileMenu();" class="tab-button w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green">Produk</button>
+                <button onclick="showTab('testimonial'); closeMobileMenu();" class="tab-button w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green">Ulasan</button>
+                <button onclick="showTab('contact'); closeMobileMenu();" class="tab-button w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-pastel-yellow hover:text-dark-green">Kontak</button>
+            </div>
+        </div>
+    </header>
+
+
+<!-- Home Tab -->
+<div id="home" class="tab-content active">
+    <section class="jamu-bg min-h-screen flex items-start pt-8 md:pt-2">
+        <div class="container mx-auto px-4 md:px-6">
+            <!-- Main Hero Section with Bottle -->
+            <div class="flex flex-col lg:flex-row items-center justify-between pt-4 md:pt-0 pb-8 gap-4">
+                <!-- Text Content -->
+                <div class="text-center lg:text-left lg:flex-1">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 text-pastel-yellow text-slide-in leading-tight">
+                        Jamu Tradisional
+                        <span class="block text-white">Sehat Alami</span>
+                    </h2>
+                    <p class="text-base md:text-lg lg:text-xl mb-6 md:mb-8 text-light-yellow leading-relaxed text-fade-in max-w-3xl lg:max-w-none">
+                        Rasakan khasiat herbal alami untuk menjaga kesehatan tubuh Anda setiap hari.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start button-fade-in">
+                        <button onclick="showTab('product')" class="bg-pastel-yellow text-dark-green px-6 md:px-8 py-3 rounded-full font-semibold hover:bg-yellow-300 transition-colors text-sm md:text-base">
+                            Lihat Produk
+                        </button>
+                        <button onclick="showTab('about')" class="border-2 border-pastel-yellow text-pastel-yellow px-6 md:px-8 py-3 rounded-full font-semibold hover:bg-pastel-yellow hover:text-dark-green transition-colors text-sm md:text-base">
+                            Pelajari Lebih Lanjut
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Bottle Image -->
+                <div class="lg:flex-1 flex justify-center lg:justify-end">
+                    <div class="bottle-animation flex justify-center w-full pl-4 md:pl-0">
+                        <img src="https://imgur.com/EZhxkXY.png" alt="Botol Jamu Lalawima" class="w-48 md:w-64 lg:w-80 h-auto max-w-full mx-auto" onerror="this.src=''; this.alt='Gambar botol tidak dapat dimuat'; this.style.display='none';">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Featured Products Section -->
+            <div class="text-center px-4 pb-16">
+                <h3 class="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6 text-pastel-yellow">Produk Unggulan</h3>
+                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-8">
+                    <div class="text-center">
+                        <div class="w-40 h-28 sm:w-44 sm:h-30 md:w-48 md:h-32 bg-pastel-yellow rounded-2xl flex items-center justify-center mb-3 md:mb-4 mx-auto shadow-lg overflow-hidden">
+                            <img src="https://i.imgur.com/nnrH1MN.png" alt="Jamu Kunyit Asam" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-5xl md:text-6xl lg:text-7xl\'>🥤</span>';">
+                        </div>
+                        <p class="text-light-yellow font-semibold text-sm md:text-base">Jamu Kunir Asem</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-40 h-28 sm:w-44 sm:h-30 md:w-48 md:h-32 bg-pastel-yellow rounded-2xl flex items-center justify-center mb-3 md:mb-4 mx-auto shadow-lg overflow-hidden">
+                            <img src="https://i.imgur.com/DwVWRrw.png" alt="Jamu Temulawak" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-5xl md:text-6xl lg:text-7xl\'>🍯</span>';">
+                        </div>
+                        <p class="text-light-yellow font-semibold text-sm md:text-base">Jamu Temulawak</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-40 h-28 sm:w-44 sm:h-30 md:w-48 md:h-32 bg-pastel-yellow rounded-2xl flex items-center justify-center mb-3 md:mb-4 mx-auto shadow-lg overflow-hidden">
+                            <img src="https://i.imgur.com/SgZDwug.png" alt="Jamu Beras Kencur" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-5xl md:text-6xl lg:text-7xl\'>🌱</span>';">
+                        </div>
+                        <p class="text-light-yellow font-semibold text-sm md:text-base">Jamu Beras Kencur</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+     <!-- About Tab -->
+    <div id="about" class="tab-content">
+       <section class="relative py-16 bg-cover bg-center" 
+             style="background-image: url('https://imgur.com/fzRVFCn.jpg'); background-color: transparent;">
+        
+        <!-- Overlay (opsional, biar teks tetap terbaca) -->
+        <div class="absolute inset-0 bg-dark-green bg-opacity-70"></div>
+        <!-- Konten -->
+        <div class="relative container mx-auto px-4 md:px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-pastel-yellow tab-fade-in">Tentang Lalawima</h2>
+                    <p class="text-lg text-pastel-yellow max-w-3xl mx-auto tab-fade-in-delay">
+                        Nama Lalawima berasal dari gabungan nama enam pendiri: Lathifah, Adinda, Lailatus, Anggita, Widi, dan Rizma. Setiap huruf mewakili pribadi yang berbeda, namun ketika disatukan melahirkan sebuah identitas yang kuat. Filosofi ini melambangkan kebersamaan, kolaborasi, dan harmoni, sebagaimana jamu yang diracik dari berbagai rempah alami untuk menghasilkan manfaat kesehatan.Lalawima’s Jamu hadir bukan hanya sebagai minuman herbal, tetapi sebagai simbol bagaimana nilai tradisi, kreativitas generasi muda, dan kearifan lokal dapat menyatu. Dengan racikan alami, kami berkomitmen menghadirkan kesehatan, keseimbangan, dan makna hidup yang lebih baik.
+                    </p>
+                </div>
+
+               <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                 <div class="bg-white rounded-lg p-6 shadow-lg text-center cursor-pointer hover:shadow-xl transition-shadow" onclick="openCreatorModal('creator1')" style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://imgur.com/VIygITa.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+                        <div class="w-20 h-20 bg-pastel-yellow rounded-full flex items-center justify-center text-dark-green font-bold text-2xl mx-auto mb-4">
+                            <img src="https://imgur.com/VIygITa.jpg" alt="Lathifah Azzahra" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-dark-green font-bold text-2xl\'>L</span>';">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-dark-green">Lathifah Azzahra</h3>
+                        <p class="text-sm text-gray-500 mt-2">Klik untuk melihat profil</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 shadow-lg text-center cursor-pointer hover:shadow-xl transition-shadow" onclick="openCreatorModal('creator2')" style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://imgur.com/aKwz2NC.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+                        <div class="w-20 h-20 bg-pastel-yellow rounded-full flex items-center justify-center text-dark-green font-bold text-2xl mx-auto mb-4">
+                           <img src="https://imgur.com/aKwz2NC.jpg" alt="Adinda Shasi Kirana" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-dark-green font-bold text-2xl\'>A</span>';">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-dark-green">Adinda Shasi Kirana</h3>
+                        <p class="text-sm text-gray-500 mt-2">Klik untuk melihat profil</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 shadow-lg text-center cursor-pointer hover:shadow-xl transition-shadow" onclick="openCreatorModal('creator3')" style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://i.imgur.com/Szbhjju.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+                        <div class="w-20 h-20 bg-pastel-yellow rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                            <img src="https://i.imgur.com/Szbhjju.png" alt="Lailatus Zulfa" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-dark-green font-bold text-2xl\'>L</span>';">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-dark-green">Lailatus Zulfa</h3>
+                        <p class="text-sm text-gray-500 mt-2">Klik untuk melihat profil</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 shadow-lg text-center cursor-pointer hover:shadow-xl transition-shadow" onclick="openCreatorModal('creator4')" style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://imgur.com/bU85WLu.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+                        <div class="w-20 h-20 bg-pastel-yellow rounded-full flex items-center justify-center text-dark-green font-bold text-2xl mx-auto mb-4">
+                            <img src="https://imgur.com/bU85WLu.jpg" alt="Anggita Huda Perdani" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-dark-green font-bold text-2xl\'>A</span>';">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-dark-green">Anggita Huda Perdani</h3>
+                        <p class="text-sm text-gray-500 mt-2">Klik untuk melihat profil</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 shadow-lg text-center cursor-pointer hover:shadow-xl transition-shadow" onclick="openCreatorModal('creator5')" style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://imgur.com/hGQAzDc.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+                        <div class="w-20 h-20 bg-pastel-yellow rounded-full flex items-center justify-center text-dark-green font-bold text-2xl mx-auto mb-4">
+                            <img src="https://imgur.com/hGQAzDc.jpg" alt="Widi Noviyanti" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-dark-green font-bold text-2xl\'>W</span>';">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-dark-green">Widi Noviyanti</h3>
+                        <p class="text-sm text-gray-500 mt-2">Klik untuk melihat profil</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 shadow-lg text-center cursor-pointer hover:shadow-xl transition-shadow" onclick="openCreatorModal('creator6')" style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('https://imgur.com/OEp99Zb.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+                        <div class="w-20 h-20 bg-pastel-yellow rounded-full flex items-center justify-center text-dark-green font-bold text-2xl mx-auto mb-4">
+                            <img src="https://imgur.com/OEp99Zb.jpg" alt="Rizma Ayunia Insani" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-dark-green font-bold text-2xl\'>R</span>';">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-dark-green">Rizma Ayunia Insani</h3>
+                        <p class="text-sm text-gray-500 mt-2">Klik untuk melihat profil</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- Product Tab -->
+    <div id="product" class="tab-content">
+       <section class="relative py-16 bg-cover bg-center" 
+             style="background-image: url('https://imgur.com/wI2VFZM.jpg'); background-color: transparent;">
+        
+        <!-- Overlay (opsional, biar teks tetap terbaca) -->
+        <div class="absolute inset-0 bg-dark-green bg-opacity-70"></div>
+        <!-- Konten -->
+        <div class="relative container mx-auto px-4 md:px-6">
+          
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-pastel-yellow tab-fade-in">Produk Kami</h2>
+                    <p class="text-lg text-pastel-yellow max-w-3xl mx-auto tab-fade-in-delay">
+                        Berbagai macam jamu tradisional untuk menjaga kesehatan dan kebugaran keluarga
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow" onclick="openProductModal('product1')">
+                        <div class="h-48 bg-pastel-yellow flex items-center justify-center overflow-hidden">
+                            <img src="https://imgur.com/nnrH1MN.jpg" alt="Jamu Kunir Asem" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-6xl\'>🥤</span>';">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-3 text-dark-green">Jamu Kunir Asem</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold text-dark-green">Rp 6.000</span>
+                                <span class="text-sm text-gray-500">Klik untuk detail</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow" onclick="openProductModal('product2')">
+                        <div class="h-48 bg-pastel-yellow flex items-center justify-center">
+                             <img src="https://imgur.com/DwVWRrw.png" alt="Jamu Temulawak" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-6xl\'>🥤</span>';">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-3 text-dark-green">Jamu Temulawak</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold text-dark-green">Rp 6.000</span>
+                                <span class="text-sm text-gray-500">Klik untuk detail</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow" onclick="openProductModal('product3')">
+                        <div class="h-48 bg-pastel-yellow flex items-center justify-center">
+                             <img src="https://imgur.com/SgZDwug.jpg" alt="Jamu Beras Kencur" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-6xl\'>🥤</span>';">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-3 text-dark-green">Jamu Beras Kencur</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold text-dark-green">Rp 6.000</span>
+                                <span class="text-sm text-gray-500">Klik untuk detail</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow" onclick="openProductModal('product4')">
+                        <div class="h-48 bg-pastel-yellow flex items-center justify-center overflow-hidden">
+                            <img src="https://imgur.com/PDalJLz.jpg" alt="Jamu Jahe" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-6xl\'>🌿</span>';">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-3 text-dark-green">Jamu Jahe</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold text-dark-green">Rp 6.000</span>
+                                <span class="text-sm text-gray-500">Klik untuk detail</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow" onclick="openProductModal('product5')">
+                        <div class="h-48 bg-pastel-yellow flex items-center justify-center overflow-hidden">
+                            <img src="https://imgur.com/lLOqtMM.jpg" alt="Jamu Brotowali" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-6xl\'>🥥</span>';">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-3 text-dark-green">Jamu Brotowali</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold text-dark-green">Rp 6.000</span>
+                                <span class="text-sm text-gray-500">Klik untuk detail</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+   <!-- Testimonial Tab -->
+    <div id="testimonial" class="tab-content">
+         <section class="relative py-16 bg-cover bg-center" 
+             style="background-image: url('https://imgur.com/tjKQ6za.jpg'); background-color: transparent;">
+        
+        <!-- Overlay (opsional, biar teks tetap terbaca) -->
+        <div class="absolute inset-0 bg-dark-green bg-opacity-70"></div>
+        <!-- Konten -->
+        <div class="relative container mx-auto px-4 md:px-6">
+          
+                <h2 class="text-4xl font-bold text-center text-pastel-yellow mb-12">Ulasan Konsumen</h2>                
+                <div id="reviewsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                    <div class="bg-white rounded-lg p-6 shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-pastel-yellow rounded-full flex items-center justify-center text-xl">👩</div>
+                            <div class="ml-4">
+                                <h4 class="font-bold text-dark-green">Adriyani</h4>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">"Awalnya cuma iseng nyobain jamu nya lalawima's, eh ternyata cocok. Tidur jadi lebih nyenyak, bangun pagi pun fresh. Jadi pengen rekomendasiin ke temen-temen juga."</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-6 shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-pastel-yellow rounded-full flex items-center justify-center text-xl">👩</div>
+                            <div class="ml-4">
+                                <h4 class="font-bold text-dark-green">Gendis</h4>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">"Biasanya pas haid suka sakit banget, tapi sejak minum jamu dari Lalawima’s rasa nyerinya jauh lebih ringan."</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-6 shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-pastel-yellow rounded-full flex items-center justify-center text-xl">👩</div>
+                            <div class="ml-4">
+                                <h4 class="font-bold text-dark-green">Kinasih</h4>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">"Minum jamu lalawima's ini tuh bikin badan langsung anget, apalagi pas cuaca dingin atau hujan. Enak banget buat nemenin nugas."</p>
+                    </div>
+                </div>                
+                <div class="max-w-2xl mx-auto bg-white rounded-lg p-8 shadow-lg">
+                    <h3 class="text-2xl font-bold text-dark-green mb-6 text-center">Tulis Ulasan Anda</h3>
+                    <form id="reviewForm" onsubmit="submitReview(event)">
+                        <div class="mb-4">
+                            <label for="reviewName" class="block text-dark-green font-semibold mb-2">Nama</label>
+                            <input type="text" id="reviewName" name="reviewName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-medium-green text-dark-green" placeholder="Masukkan nama Anda" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="reviewText" class="block text-dark-green font-semibold mb-2">Kritik dan Saran</label>
+                            <textarea id="reviewText" name="reviewText" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-medium-green text-dark-green" placeholder="Tulis kritik dan saran Anda..." required></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-medium-green text-white py-3 rounded-lg hover:bg-dark-green transition-colors font-semibold">Kirim Review</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Contact Tab -->
+<div id="contact" class="tab-content">
+    <section class="relative py-16 bg-cover bg-center" 
+             style="background-image: url('https://imgur.com/t2j8aj9.jpg'); background-color: transparent;">
+        
+        <!-- Overlay (opsional, biar teks tetap terbaca) -->
+        <div class="absolute inset-0 bg-dark-green bg-opacity-70"></div>
+        
+        <!-- Konten -->
+        <div class="relative container mx-auto px-4 md:px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-pastel-yellow tab-fade-in">
+                    Hubungi Kami
+                </h2>
+                <p class="text-lg text-pastel-yellow max-w-3xl mx-auto tab-fade-in-delay">
+                    Siap melayani pesanan dan pertanyaan Anda seputar Lalawima's Jamu
+                </p>
+            </div>
+
+            <!-- Ubah grid jadi 1 kolom supaya form di atas, kontak di bawah -->
+            <div class="grid grid-cols-1 gap-12">
+                
+                <!-- Form Pemesanan -->
+                 <div class="bg-white rounded-lg p-6 shadow-lg tab-fade-in-delay-2 w-11/12 max-w-4xl mx-auto">
+                    <h3 class="text-2xl font-semibold mb-6 text-dark-green text-center">Form Pemesanan</h3>
+                    <form class="space-y-4" onsubmit="sendToWhatsApp(event)">
+                        <div>
+                            <label class="block text-dark-green mb-2 font-semibold">Nama Lengkap</label>
+                            <input type="text" id="customerName" 
+                                   class="w-full px-4 py-2 rounded-lg border border-gray-300 text-dark-green focus:outline-none focus:ring-2 focus:ring-pastel-yellow" 
+                                   placeholder="Masukkan nama Anda" required>
+                        </div>
+                        <div>
+                            <label class="block text-dark-green mb-2 font-semibold">Nomor Telepon</label>
+                            <input type="tel" id="customerPhone" 
+                                   class="w-full px-4 py-2 rounded-lg border border-gray-300 text-dark-green focus:outline-none focus:ring-2 focus:ring-pastel-yellow" 
+                                   placeholder="Masukkan nomor telepon Anda" required>
+                        </div>
+                        <div>
+                            <label class="block text-dark-green mb-2 font-semibold">Produk yang Dipesan</label>
+                            <select id="productOrder" 
+                                    class="w-full px-4 py-2 rounded-lg border border-gray-300 text-dark-green focus:outline-none focus:ring-2 focus:ring-pastel-yellow" 
+                                    required>
+                                <option value="">Pilih produk</option>
+                                <option value="Jamu Kunyit Asam - Rp 15.000">Jamu Kunyit Asam - Rp 6.000</option>
+                                <option value="Jamu Temulawak - Rp 18.000">Jamu Temulawak - Rp 6.000</option>
+                                <option value="Jamu Beras Kencur - Rp 12.000">Jamu Beras Kencur - Rp 6.000</option>
+                                <option value="Jamu Jahe Merah - Rp 16.000">Jamu Jahe Merah - Rp 6.000</option>
+                                <option value="Jamu Kencur - Rp 14.000">Jamu Kencur - Rp 6.000</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-dark-green mb-2 font-semibold">Jumlah</label>
+                            <input type="number" id="quantity" min="1" 
+                                   class="w-full px-4 py-2 rounded-lg border border-gray-300 text-dark-green focus:outline-none focus:ring-2 focus:ring-pastel-yellow" 
+                                   placeholder="Masukkan jumlah" required>
+                        </div>
+                        <div>
+                            <label class="block text-dark-green mb-2 font-semibold">Alamat Pengiriman</label>
+                            <textarea rows="3" id="address" 
+                                      class="w-full px-4 py-2 rounded-lg border border-gray-300 text-dark-green focus:outline-none focus:ring-2 focus:ring-pastel-yellow" 
+                                      placeholder="Masukkan alamat lengkap" required></textarea>
+                        </div>
+                        <button type="submit" 
+                                class="w-full bg-dark-green text-white py-3 rounded-lg font-semibold hover:bg-medium-green transition-colors">
+                            Pesan via WhatsApp
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Informasi Kontak -->
+                <div class="tab-fade-in-delay">
+                    <h3 class="text-2xl font-semibold mb-6 text-pastel-yellow text-center">Informasi Kontak</h3>
+                    <div class="space-y-4 mx-auto max-w-md text-left">
+                        <div class="flex items-center">
+                            <span class="text-2xl mr-4">📱</span>
+                            <div>
+                                <p class="font-semibold text-pastel-yellow">WhatsApp</p>
+                                <a href="https://wa.me/6281585869813" target="_blank" 
+                                   class="text-pastel-yellow hover:text-pastel-yellow transition-colors">
+                                   0815-8586-9813
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-2xl mr-4">📧</span>
+                            <div>
+                                <p class="font-semibold text-pastel-yellow">Email</p>
+                                <a href="mailto:lalawimasjamu@gmail.com" 
+                                   class="text-pastel-yellow hover:text-pastel-yellow transition-colors">
+                                   lalawimasjamu@gmail.com
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-2xl mr-4">📷</span>
+                            <div>
+                                <p class="font-semibold text-pastel-yellow">Instagram</p>
+                                <a href="https://www.instagram.com/lalawimas_jamu?igsh=MWNtZzQyaHc5Znpibg==" target="_blank" 
+                                   class="text-pastel-yellow hover:text-pastel-yellow transition-colors">
+                                   @lalawimas_jamu
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+   <!-- Creator Modals -->
+    <div id="creatorModal" class="modal">
+        <div class="modal-content bg-white rounded-lg p-4 md:p-8 relative">
+            <button onclick="closeCreatorModal()" class="absolute top-2 right-2 md:top-4 md:right-4 text-gray-500 hover:text-gray-700 text-xl md:text-2xl w-8 h-8 flex items-center justify-center">&times;</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content bg-white rounded-lg p-4 md:p-8 relative">
+            <button onclick="closeProductModal()" class="absolute top-2 right-2 md:top-4 md:right-4 text-gray-500 hover:text-gray-700 text-xl md:text-2xl w-8 h-8 flex items-center justify-center">&times;</button>
+            <div id="productModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t py-8" style="background-color: #15803d; border-color: #15803d;">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="text-center">
+                <h3 class="text-xl font-bold text-pastel-yellow mb-2">Lalawima's Jamu</h3>
+                <p class="text-light-yellow mb-4">Lalawima’s – meracik harmoni, menghidupkan warisan.</p>
+
+                <p class="text-light-yellow text-sm">© 2025 Lalawima's Jamu. Semua hak dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to all buttons with the same onclick function
+            const activeButtons = document.querySelectorAll(`button[onclick*="${tabName}"]`);
+            activeButtons.forEach(button => {
+                button.classList.add('active');
+            });
+            
+            // Close mobile menu after selection
+            closeMobileMenu();
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const hamburger = document.querySelector('.hamburger');
+            
+            mobileMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const hamburger = document.querySelector('.hamburger');
+            
+            mobileMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const hamburger = document.querySelector('.hamburger');
+            const header = document.querySelector('header');
+            
+            if (!header.contains(event.target) && mobileMenu.classList.contains('active')) {
+                closeMobileMenu();
+            }
+        });
+
+        const creators = {
+            creator1: {
+                name: 'Lathifah Azzahra',
+                photo: 'https://imgur.com/VIygITa.jpg',
+                instagram: 'https://www.instagram.com/24.hra?igsh=a3NkZ21mbGVlNW9x',
+                youtube: ' https://youtube.com/@aazzaahhrraa?si=ZfBYXL78jySb5pOM',
+                linkedin: 'https://www.linkedin.com/in/lathifah-az-zahra-03a95031b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app'
+            },
+            creator2: {
+                name: 'Adinda Shasi Kirana',
+                photo: 'https://imgur.com/aKwz2NC.jpg',
+                instagram: 'https://www.instagram.com/adindashsi?igsh=YXNhaTJvZWh3MTQ4',
+                youtube: 'https://youtube.com/@adindashasikirana-e9o?si=vLbze_N9cjKk66CF',
+                linkedin: 'https://www.linkedin.com/in/adinda-shasi-kirana-843b6131b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app'
+            },
+            creator3: {
+                name: 'Lailatus Zulfa',
+                photo: 'https://i.imgur.com/Szbhjju.png',
+                instagram: 'https://www.instagram.com/zul_faaaa12?igsh=dWtxanBuenU1OGg0',
+                youtube: 'https://youtube.com/@lailatuszulfa5653?si=Mm36fivHqQNyaDJS',
+                linkedin: 'https://id.linkedin.com/in/lailatus-zulfa-7b5888321'
+            },
+            creator4: {
+                name: 'Anggita Huda Perdani',
+                photo: 'https://imgur.com/bU85WLu.jpg',
+                instagram: 'https://www.instagram.com/its.gittaaa?igsh=MTRrM2g3cTllZDZueA==',
+                youtube: 'https://youtube.com/@anggitahudaperdani9511?si=kKaHIqpDjmUJ_EeZ',
+                linkedin: 'https://www.linkedin.com/in/anggita-huda-perdani-ab494a31b'
+            },
+            creator5: {
+                name: 'Widi Noviyanti',
+                photo: 'https://imgur.com/hGQAzDc.jpg',
+                instagram: 'https://www.instagram.com/wdyynti_?igsh=MW1jZTBmY3BqdncwMw==',
+                youtube: 'https://www.youtube.com/@widinoviyantiofficial8051',
+                linkedin: 'https://www.linkedin.com/in/widi-noviyanti-a92779324?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app'
+            },
+            creator6: {
+                name: 'Rizma Ayunia Insani',
+                photo: 'https://imgur.com/OEp99Zb.jpg',
+                instagram: 'https://www.instagram.com/the__rizm.a?igsh=MTA3ZHBmZzN6YjN6Yg==',
+                youtube: 'https://www.youtube.com/@holaaa-e2y',
+                linkedin: 'https://www.linkedin.com/in/rizma-ayunia-insani-240a0631b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app'
+            }
+        };
+
+        function openCreatorModal(creatorId) {
+            const creator = creators[creatorId];
+            const modal = document.getElementById('creatorModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalContent.innerHTML = `
+                <div class="text-center">
+                     <div class="w-32 h-32 bg-pastel-yellow rounded-full flex items-center justify-center mx-auto mb-6 overflow-hidden">
+                        <img src="${creator.photo}" alt="${creator.name}" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-dark-green font-bold text-4xl\'>' + '${creator.name}'.charAt(0) + '</span>';">
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark-green mb-2">${creator.name}</h3>
+                    
+                    <div class="flex justify-center space-x-4">
+                        <a href="${creator.instagram}" target="_blank" class="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors flex items-center">
+                            <span class="mr-2">📷</span>
+                            Instagram
+                        </a>
+                        <a href="${creator.youtube}" target="_blank" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center">
+                            <span class="mr-2">📺</span>
+                            YouTube
+                        </a>
+                        <a href="${creator.linkedin}" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                            <span class="mr-2">💼</span>
+                            LinkedIn
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeCreatorModal() {
+            const modal = document.getElementById('creatorModal');
+            modal.classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('creatorModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCreatorModal();
+            }
+        });
+
+         const products = {
+            product1: {
+                name: 'Jamu Kunir Asem',
+                price: 'Rp 6.000',
+                image: 'https://imgur.com/nnrH1MN.jpg',
+                emoji: '🫚',
+                description: 'Jamu kunir asem merupakan minuman herbal tradisional yang dibuat dari campuran kunyit (kunir) dan asam jawa. Minuman ini memiliki rasa segar sedikit asam dan berwarna kuning alami dari kunyit. Kandungan kurkumin dalam kunyit bermanfaat untuk melancarkan pencernaan serta meredakan nyeri haid, sedangkan asam jawa kaya akan vitamin C dan antioksidan yang membantu meningkatkan daya tahan tubuh. Dengan rasanya yang menyegarkan, jamu ini juga cocok diminum untuk mengurangi rasa lelah setelah beraktivitas.'
+            },
+            product2: {
+                name: 'Jamu Temulawak',
+                price: 'Rp 6.000',
+                image: 'https://imgur.com/DwVWRrw.png',
+                emoji: '🫚',
+                description: 'Jamu temulawak adalah minuman tradisional khas Indonesia yang dibuat dari rimpang temulawak (Curcuma xanthorrhiza), tanaman yang masih satu keluarga dengan jahe dan kunyit. Sejak dahulu, masyarakat Indonesia menggunakan temulawak sebagai obat alami karena memiliki aroma khas dan rasa sedikit pahit, tetapi kaya akan manfaat. Kandungan kurkuminoid, minyak atsiri, dan zat aktif lainnya dipercaya dapat melancarkan pencernaan, menambah nafsu makan, menjaga kesehatan hati, mengurangi peradangan, serta meningkatkan daya tahan tubuh. Cara membuat jamu temulawak cukup mudah, yaitu dengan mencuci bersih rimpang temulawak, memotong atau menggeprek, lalu merebusnya hingga mendidih. Untuk mengurangi rasa pahit, biasanya ditambahkan madu atau gula aren. Hingga kini, jamu temulawak masih banyak digemari, baik dalam bentuk minuman tradisional maupun produk modern yang dikemas instan.'
+            },
+            product3: {
+                name: 'Jamu Beras Kencur',
+                price: 'Rp 6.000',
+                image: 'https://imgur.com/SgZDwug.jpg',
+                emoji: '🫚',
+                description: 'Jamu beras kencur merupakan salah satu jamu populer yang terbuat dari campuran beras yang direndam, kencur, gula merah, serta tambahan rempah lain seperti jahe dan asam jawa. Rasanya manis, segar, dan sedikit pedas hangat dari kencur. Minuman herbal ini dipercaya dapat mengembalikan stamina, mengurangi rasa lelah, meningkatkan nafsu makan, serta meredakan pegal-pegal. Aroma khas kencur juga memberikan efek rileks pada tubuh.'
+            },
+            product4: {
+                name: 'Jamu Jahe',
+                price: 'Rp 6.000',
+                image: 'https://imgur.com/PDalJLz.jpg',
+                emoji: '🫚',
+                description: 'Jamu jahe merupakan minuman tradisional yang diolah dari rimpang jahe segar atau jahe kering. Rasanya hangat, pedas alami, dan sering diberi tambahan gula merah atau madu. Jahe mengandung gingerol yang bersifat antiradang dan antioksidan, sehingga bermanfaat untuk menghangatkan tubuh, meredakan mual, mengatasi masuk angin, serta mengurangi nyeri sendi dan otot. Selain itu, konsumsi jamu jahe juga dapat meningkatkan sistem imun tubuh.'
+            },
+            product5: {
+                name: 'Jamu Brotowali',
+                price: 'Rp 6.000',
+                image: 'https://imgur.com/lLOqtMM.jpg',
+                emoji: '🫚',
+                description: 'Jamu brotowali merupakan jamu tradisional yang diolah dari batang tanaman brotowali yang terkenal dengan rasanya sangat pahit. Meskipun begitu, kandungan senyawa alkaloid dan antioksidan di dalamnya memberikan banyak manfaat kesehatan. Jamu ini dipercaya mampu menurunkan kadar gula darah, membersihkan darah, meningkatkan daya tahan tubuh, serta membantu mengatasi gatal-gatal dan masalah kulit.'
+            }
+        };
+
+        function openProductModal(productId) {
+            const product = products[productId];
+            const modal = document.getElementById('productModal');
+            const modalContent = document.getElementById('productModalContent');
+            
+            
+            modalContent.innerHTML = `
+                <div class="text-center">
+                     <div class="w-48 h-58 bg-pastel-yellow rounded-lg flex items-center justify-center mx-auto mb-6 overflow-hidden">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-
+                   cover rounded-lg" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-6xl\'>${product.emoji}</span>';">
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark-green mb-4">${product.name}</h3>
+                    <p class="text-3xl font-bold text-medium-green mb-6">${product.price}</p>
+                    <p class="text-gray-600 text-left leading-relaxed">${product.description}</p>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeProductModal() {
+            const modal = document.getElementById('productModal');
+            modal.classList.remove('active');
+        }
+
+        // Close product modal when clicking outside
+        document.getElementById('productModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeProductModal();
+            }
+        });
+
+        // Rating functionality
+        let currentRating = 0;
+        
+        function setRating(rating) {
+            currentRating = rating;
+            document.getElementById('reviewRating').value = rating;
+            
+            const stars = document.querySelectorAll('.star-btn');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('text-gray-300');
+                    star.classList.add('text-yellow-500');
+                } else {
+                    star.classList.remove('text-yellow-500');
+                    star.classList.add('text-gray-300');
+                }
+            });
+        }
+        
+        // Initialize rating display - make sure all stars start as gray
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.star-btn');
+            stars.forEach(star => {
+                star.classList.remove('text-yellow-500');
+                star.classList.add('text-gray-300');
+            });
+            currentRating = 0;
+            document.getElementById('reviewRating').value = 0;
+        });
+        
+        // Generate random avatar
+        function getRandomAvatar() {
+            const avatars = ['👩', '👨', '👩‍💼', '👨‍💼', '👩‍🎓', '👨‍🎓', '👩‍⚕️', '👨‍⚕️'];
+            return avatars[Math.floor(Math.random() * avatars.length)];
+        }
+        
+        // Delete review function
+        function deleteReview(reviewElement) {
+            if (confirm('Apakah Anda yakin ingin menghapus review ini?')) {
+                reviewElement.remove();
+                alert('Review berhasil dihapus!');
+            }
+        }
+
+        // Form submissions
+        function submitReview(event) {
+            event.preventDefault();
+            const name = document.getElementById('reviewName').value;
+            const review = document.getElementById('reviewText').value;
+           
+           
+            
+           
+            
+            // Create new review element
+            const reviewElement = document.createElement('div');
+            reviewElement.className = 'bg-white rounded-lg p-6 shadow-lg relative';
+            reviewElement.innerHTML = `
+                <button onclick="deleteReview(this.parentElement)" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-xl font-bold w-8 h-8 rounded-full hover:bg-red-100 flex items-center justify-center transition-colors" title="Hapus review">&times;</button>
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-pastel-yellow rounded-full flex items-center justify-center text-xl">${getRandomAvatar()}</div>
+                    <div class="ml-4">
+                        <h4 class="font-bold text-dark-green">${name}</h4>
+                       
+                    </div>
+                </div>
+                <p class="text-gray-700">"${review}"</p>
+            `;
+            
+            // Add to reviews container at the beginning
+            const reviewsContainer = document.getElementById('reviewsContainer');
+            reviewsContainer.insertBefore(reviewElement, reviewsContainer.firstChild);
+            
+            // Show success message
+            alert(`Terima kasih ${name}! Review Anda telah ditampilkan.`);
+            
+            // Reset form
+            document.getElementById('reviewForm').reset();
+            setRating(0); // Reset to no stars selected
+        }
+
+        function sendToWhatsApp(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const product = document.getElementById('productOrder').value;
+            const quantity = document.getElementById('quantity').value;
+            const address = document.getElementById('address').value;
+            
+            const message = `Halo, saya ingin memesan jamu:
+
+Nama: ${name}
+No. Telepon: ${phone}
+Produk: ${product}
+Jumlah: ${quantity}
+Alamat: ${address}
+
+Terima kasih!`;
+            
+            const whatsappUrl = `https://wa.me/6281585869813?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Loading screen functionality
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('fade-out');
+                setTimeout(function() {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }, 5000); // Show loading for 5 seconds
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97796b29f771fd18',t:'MTc1NjYxMDcwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
